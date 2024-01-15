@@ -20,7 +20,16 @@ def login():
     password = data['password']
 
     if username == 'admin' and password == 'admin':
-        
-        return jsonify({'message': 'Login successful'})
+
+        access_token = create_access_token(identity=username)
+        return jsonify(access_token=access_token), 200
+    
     else:
         return jsonify({'error': 'Invalid username or password'}), 401
+
+
+@routes_blueprint.route('/login') 
+@jwt_required()
+def protected():
+    current_user = "Retrieved from JWT claims: {}".format(get_jwt_identity())
+    return jsonify(logged_in_as=current_user), 200
